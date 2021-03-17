@@ -1,0 +1,49 @@
+a = Array(, , _
+"", , , , _
+, , ", "FAIXA INICIAL DE GRIS", "FAIXA FINAL DE GRIS", _
+, , _
+, , _
+"FAIXA INICIAL DE TAS", "FAIXA FINAL DE TAS", , _
+, , _
+, , , , _
+, , , , , , _
+, , , , , , _
+, , , _
+, , , _
+"FAIXA INÍCIAL DE PEDÁGIO", "FAIXA FINAL DE PEDÁGIO", , _
+,, , _
+, , _
+"FAIXA INICIAL DE COLETA", "FAIXA FINAL DE COLETA",, _
+, , _
+, "ENTREGA VALOR FIXO", _
+"FAIXA INICIAL DE ENTREGA", "FAIXA FINAL DE ENTREGA",, _
+, , _
+, ".")
+
+b = Array(, , , "FAIXA INICIAL DE SEGURO", _
+"FAIXA FINAL DE SEGURO", , , _
+,, _
+, _
+, , , , "FAIXA INICIAL DE ADEME", _
+"FAIXA FINAL DE ADEME", , , , _
+, _
+, , , _
+, , , "FAIXA INICIAL DE EMEX", _
+"FAIXA FINAL DE EMEX", , , , _
+, , _
+, , , , _
+, , "FAIXA INICIAL DE CTE", "FAIXA FINAL DE CTE", _
+, , ", , _
+, _
+, _
+, ,, , _
+, "FAIXA INICIAL DE OUTRA TAXA", "FAIXA FINAL DE OUTRA TAXA", _
+, , , _
+, , _
+, , _
+, , _
+, "FAIXA FINAL DE SECCAT",, _
+"FAIXA INICIAL DE SECCAT", )
+
+
+
