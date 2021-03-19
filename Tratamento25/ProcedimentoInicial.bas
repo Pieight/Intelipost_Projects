@@ -8,6 +8,9 @@ Public colmin As Integer
 Public colmax As Integer
 Sub Procedimento_Geral()
     
+    
+    
+    
     Application.ScreenUpdating = False
     Dim wk As Worksheet, z As Double
     Dim contador As Double
@@ -32,7 +35,7 @@ Sub Procedimento_Geral()
     Cells.Select
     Cells.Replace What:="-", Replacement:="", LookAt:=xlPart, SearchOrder:= _
         xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, _
-        FormulaVersion:=xlReplaceFormula2 ', after:=Range("A1")
+        FormulaVersion:=xlReplaceFormula2, after:=Range("A1")
         
     
 'Show up hidden row/colunms
