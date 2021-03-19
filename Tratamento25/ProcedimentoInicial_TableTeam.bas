@@ -127,6 +127,7 @@ Sub Procedimento_Geral()
     
     'Range("A11") = InputBox("Digite o CD (se for CD de origem nacional, deixe o '1')", "CD", "1")
     'Cells.Columns.AutoFit
+    ActiveWindow.FreezePanes = False
 Exit Sub
 
 errohandle:
