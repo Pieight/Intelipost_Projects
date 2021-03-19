@@ -32,7 +32,7 @@ Sub Procedimento_Geral()
     Cells.Select
     Cells.Replace What:="-", Replacement:="", LookAt:=xlPart, SearchOrder:= _
         xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, _
-        FormulaVersion:=xlReplaceFormula2, after:=Range("A1")
+        FormulaVersion:=xlReplaceFormula2 ', after:=Range("A1")
         
     
 'Show up hidden row/colunms
@@ -94,6 +94,8 @@ Sub Procedimento_Geral()
         i = i + 1
       Loop
       
+      ActiveWindow.FreezePanes = False
+      
     Application.ScreenUpdating = True
     'Add the Info sheet
     Sheets.Add
@@ -127,8 +129,6 @@ Sub Procedimento_Geral()
     
     Range("A11") = InputBox("Digite o CD (se for CD de origem nacional, deixe o '1')", "CD", "1")
     Cells.Columns.AutoFit
-    
-    ActiveWindow.FreezePanes = False
 Exit Sub
 
 errohandle:
