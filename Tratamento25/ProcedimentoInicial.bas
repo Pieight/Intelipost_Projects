@@ -35,7 +35,7 @@ Sub Procedimento_Geral()
     Cells.Select
     Cells.Replace What:="-", Replacement:="", LookAt:=xlPart, SearchOrder:= _
         xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, _
-        FormulaVersion:=xlReplaceFormula2, after:=Range("A1")
+        FormulaVersion:=xlReplaceFormula2 ', after:=Range("A1")
         
     
 'Show up hidden row/colunms
@@ -70,10 +70,10 @@ Sub Procedimento_Geral()
     colmax = WorksheetFunction.CountA(ActiveSheet.Rows(rowmin))
     On Error GoTo errohandle
     i = colmin
-    
-    Do While ActiveSheet.Cells(rowmin, i).Value <> ""
+        
+        Do While ((ActiveSheet.Cells(rowmin, i).Value <> "") Or (Range(Cells(rowmin, i), Cells(rowmin, i)).End(xlToRight).Value <> ""))
             If ((ActiveSheet.Cells(rowmin, i).End(xlDown).Value = "") Or ((WorksheetFunction.Sum(ActiveSheet.Columns(i)) = 0) And IsNumeric(ActiveSheet.Cells(rowmin, i).End(xlDown).Value))) Then
-                If ((ActiveSheet.Cells(rowmin, i) <> "VALOR EXCEDENTE") And (ActiveSheet.Cells(rowmin, i) <> "PRAZO(DIAS ÚTEIS)") And (ActiveSheet.Cells(rowmin, i) <> "CEPI") And (ActiveSheet.Cells(rowmin, i) <> "CEPF")) And Not (IsNumeric(ActiveSheet.Cells(rowmin, i))) Then
+                If ((ActiveSheet.Cells(rowmin, i) <> "VALOR EXCEDENTE") And (ActiveSheet.Cells(rowmin, i) <> "PRAZO(DIAS ÚTEIS)") And (ActiveSheet.Cells(rowmin, i) <> "CEPI") And (ActiveSheet.Cells(rowmin, i) <> "CEPF")) And Not (IsNumeric(ActiveSheet.Cells(rowmin, i))) Or (ActiveSheet.Cells(rowmin, i) = "") Then
                     ActiveSheet.Columns(i).Delete
                     i = i - 1
                 End If
