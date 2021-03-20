@@ -77,7 +77,7 @@ Sub Procedimento_Geral()
                     ActiveSheet.Columns(i).Delete
                     i = i - 1
                 End If
-                If IsNumeric(ActiveSheet.Cells(rowmin, i)) And (WorksheetFunction.Average(ActiveSheet.Columns(i)) = ActiveSheet.Cells(rowmin, i)) Then
+                If IsNumeric(ActiveSheet.Cells(rowmin, i)) And (WorksheetFunction.Average(ActiveSheet.Columns(i)) = ActiveSheet.Cells(rowmin, i)) And (WorksheetFunction.Sum(ActiveSheet.Columns(i)) = ActiveSheet.Cells(rowmin, i)) Then
                     ActiveSheet.Columns(i).Delete
                 End If
             End If
