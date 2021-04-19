@@ -13,7 +13,7 @@ Public colval As Double
 
 Sub TratamentoFinal()
 Dim categorias As Variant, z As Double, contador As Integer, valorexists As Boolean, cabecalho As Boolean, celcabecalho As Range, comparacao As Boolean
-Set cels = Application.InputBox(prompt:="A matriz começa em qual célula?", Title:="Começo da matriz", Type:=8)
+Set cels = Cells.Find("CEPI")
 rowmin = cels.row
 colmin = cels.Column
 rowmax = WorksheetFunction.CountA(ActiveSheet.Columns(colmin))
@@ -78,7 +78,8 @@ Do While cels.Offset(0, i).Value <> ""
         For z = 1 To rowmax - 1
             If cels.Offset(z, i) <> 0 Then
                 If ((cels.Offset(z, i).NumberFormat = "0.00%") Or (cels.Offset(z, i).NumberFormat = "0%") _
-                Or (cels.Offset(z, i).NumberFormat = "0.000%") Or (cels.Offset(z, i).NumberFormat = "0.0%")) Then
+                Or (cels.Offset(z, i).NumberFormat = "0.000%") Or (cels.Offset(z, i).NumberFormat = "0.0%") Or (cels.Offset(z, i).NumberFormat = "0.0000%") _
+                Or (cels.Offset(z, i).NumberFormat = "0.00000%") Or (cels.Offset(z, i).NumberFormat = "0.000000%")) Then
                     Call Tirar_Porcentagem_function(cels.Offset(1, i))
                 Else
                     Exit For

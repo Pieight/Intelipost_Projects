@@ -56,7 +56,8 @@ Sub Procedimento_Geral()
     
     Selection.UnMerge
     Cells.EntireColumn.AutoFit
-        
+    Cells.EntireRow.AutoFit
+    
     Application.ScreenUpdating = True
     
     'Exclui colunas que não tem necessidade
@@ -232,5 +233,5 @@ b = Array("SEGURO MÁXIMO", "SEGURO(%)", "SEGURO VALOR FIXO", "FAIXA INICIAL DE S
 "SECCAT VALOR FIXO", "FAIXA FINAL DE SECCAT", "FAIXA VIGENTE SOBRE(NF ou Peso)", _
 "FAIXA INICIAL DE SECCAT", "SECCAT VALOR FIXO")
 
-c = Array("ICMS Incluso?(S/N)", "CUBAGEM(kg/m³)", "ISENÇÃO DE CUBAGEM(kg)", "LIMITE DE ALTURA(cm)", "LIMITE DE LARGURA(cm)", "LIMITE DE COMPRIMENTO(cm)", "CEP ORIGEM")
+c = Array("ICMS Incluso?(S/N)", "CUBAGEM(kg/m³)", "ISENÇÃO DE CUBAGEM(kg)", "LIMITE DE ALTURA(cm)", "LIMITE DE LARGURA(cm)", "LIMITE DE COMPRIMENTO(cm)", "CEP ORIGEM", "CEP FINAL")
 End Sub
