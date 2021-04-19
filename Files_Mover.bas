@@ -15,6 +15,9 @@ Set FSO1 = CreateObject("Scripting.FileSystemObject")
 
 Cells(1, 5) = Time
 
+'Função para jogar os arquivos presentes na pasta "Tratadas" direto para "resultados"
+Call mover
+
 'Função para preencher todas as pastas existentes
 Call array_folder("I:\03 Clientes")
 
@@ -257,4 +260,15 @@ For g = 0 To UBound(path_vector)
     Range("A1").End(xlDown).Offset(1, 0) = path_vector(g)
 Next g
 Sheets("Arrebatador").Activate
+End Sub
+
+Sub mover()
+Dim files
+
+files = Dir("C:\Users\Paulo Henrique\Desktop\Tratadas\*")
+
+Do While files <> ""
+    FSO1.MoveFile "C:\Users\Paulo Henrique\Desktop\Tratadas\" & files, "C:\Users\Paulo Henrique\Desktop\Resultados\" & files
+    files = Dir()
+Loop
 End Sub
