@@ -12,6 +12,7 @@ Public coldel As Double
 Public colval As Double
 
 Sub TratamentoFinal()
+Attribute TratamentoFinal.VB_ProcData.VB_Invoke_Func = "t\n14"
 Dim categorias As Variant, z As Double, contador As Integer, valorexists As Boolean, cabecalho As Boolean, celcabecalho As Range, comparacao As Boolean
 Set cels = Cells.Find("CEPI")
 rowmin = cels.row
@@ -187,21 +188,30 @@ If ActiveSheet.AutoFilterMode = True Then
    ActiveSheet.AutoFilterMode = False
 End If
 
+colr = Cells.Find("CEPI").End(xlToRight).Column
+rowr = Cells.Find("CEPI").End(xlDown).row
 
-Cells.Find("CEPI").Offset(1, 0).Select
-Selection.AutoFilter
+Range(Cells.Find("CEPI"), Cells(rowr, colr)).Select
 
-ActiveWorkbook.Worksheets("2.5").AutoFilter.Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets("2.5").AutoFilter.Sort.SortFields.Add2 Key:= _
+Selection.Sort key1:=Range("C4:C" & rowmax), key2:=Range("D4:D" & rowmax), Order1:=xlAscending, Order2:=xlAscending, Header:=x1yes
+
+
+
+
+'Cells.Find("CEPI").Offset(1, 0).Select
+'Selection.AutoFilter
+
+'ActiveWorkbook.Worksheets("2.5").AutoFilter.Sort.SortFields.Clear
+    'ActiveWorkbook.Worksheets("2.5").AutoFilter.Sort.SortFields.Add2 Key:= _
         Range("C4:C" & rowmax), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption _
         :=xlSortNormal
-    With ActiveWorkbook.Worksheets("2.5").AutoFilter.Sort
-        .Header = xlYes
-        .MatchCase = False
-        .Orientation = xlTopToBottom
-        .SortMethod = xlPinYin
-        .Apply
-    End With
+    'With ActiveWorkbook.Worksheets("2.5").AutoFilter.Sort
+        '.Header = xlYes
+        '.MatchCase = False
+        '.Orientation = xlTopToBottom
+        '.SortMethod = xlPinYin
+       ' .Apply
+    'End With
 
 Application.ScreenUpdating = False
 
