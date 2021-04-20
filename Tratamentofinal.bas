@@ -266,6 +266,8 @@ Range("A1").Select
 Cells.EntireColumn.AutoFit
 Application.ScreenUpdating = True
 
+ActiveWorkbook.Close savechanges:=True
+
 End Sub
 
 
