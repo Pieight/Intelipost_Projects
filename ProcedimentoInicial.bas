@@ -7,6 +7,7 @@ Public rowmax As Double
 Public colmin As Integer
 Public colmax As Integer
 Sub Procedimento_Geral()
+Attribute Procedimento_Geral.VB_ProcData.VB_Invoke_Func = "p\n14"
     
     
     
@@ -15,6 +16,8 @@ Sub Procedimento_Geral()
     Dim wk As Worksheet, z As Double
     Dim contador As Double
     Set wb = ActiveWorkbook
+    Set cels = ActiveCell
+    
     'Paste special
     Cells.Copy
     Range("A1").PasteSpecial xlPasteValues
@@ -61,8 +64,7 @@ Sub Procedimento_Geral()
     Application.ScreenUpdating = True
     
     'Exclui colunas que não tem necessidade
-    Set cels = Application.InputBox(prompt:="A matriz começa em qual célula?", Title:="Começo da matriz", Type:=8)
-    
+
     Application.ScreenUpdating = False
     
     rowmin = cels.row
