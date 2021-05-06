@@ -6,6 +6,7 @@ Sub main()
 
 ActiveWorkbook.Save
 
+
 'Função que irá declarar e definir todas as variáveis necessárias para as funções
 Call declarar
 
@@ -23,6 +24,7 @@ Call construcao
 
 'Criacao da 25 a partir da VTEX
 Call cria_25
+ 
 
 
 End Sub
@@ -59,7 +61,7 @@ Next i
 End Sub
 
 Sub classificar()
-
+endcol = range("A1").End(xlToRight).Column
 
 ActiveWorkbook.Worksheets(1).Sort.SortFields.Clear
     ActiveWorkbook.Worksheets(1).Sort.SortFields.Add2 Key:=firstrange, SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:= _
@@ -71,7 +73,7 @@ ActiveWorkbook.Worksheets(1).Sort.SortFields.Clear
     ActiveWorkbook.Worksheets(1).Sort.SortFields.Add2 Key:=fourthrange, SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:= _
         xlSortNormal
     With ActiveWorkbook.Worksheets(1).Sort
-        .SetRange range(Cells(1, 1), Cells(rowmax, minimumvalcol))
+        .SetRange range(Cells(1, 1), Cells(rowmax, endcol))
         .Header = xlYes
         .MatchCase = False
         .Orientation = xlTopToBottom
