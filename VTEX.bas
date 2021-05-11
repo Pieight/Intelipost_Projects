@@ -1,11 +1,14 @@
-Attribute VB_Name = "Módulo1"
+Attribute VB_Name = "Macro_VTEX"
 Dim cepicol As Double, cepfcol As Double, rowmax As Double, wscol As Double, wecol As Double, minimumvalcol As Double
 Dim moneycostcol As Double, pricepercol As Double, exccol As Double, maxvolcol As Double, timecostcol As Double
-Dim firstrange As range, secondrange As range, thirdrange As range, fourthrange As range, rangepeso() As Variant, array25() As Variant, rowmax25 As Double
+Dim firstrange As Range, secondrange As Range, thirdrange As Range, fourthrange As Range, rangepeso() As Variant, array25() As Variant, rowmax25 As Double, divisor As Double, wb25 As Workbook
+
+Public ceporigem1, icms, limitc, limitl, limita, cubagem, isencao
+
 Sub main()
 
-ActiveWorkbook.Save
-
+'ActiveWorkbook.Save
+Sheets("Dados").Activate
 
 'Função que irá declarar e definir todas as variáveis necessárias para as funções
 Call declarar
@@ -16,6 +19,9 @@ Call classificar
 'Cria uma matriz com todos os pesos possíveis da VTEX
 Call verificacao
 
+'Verifica a formatcao do prazo
+Call format_prazo
+
 'Faz um sort da matriz de pesos
 Call sorting
 
@@ -24,8 +30,9 @@ Call construcao
 
 'Criacao da 25 a partir da VTEX
 Call cria_25
- 
 
+'Criar a versão final da tabela a partir da 2.5
+Call go(wb25)
 
 End Sub
 
@@ -33,7 +40,7 @@ End Sub
 
 Sub declarar()
 
-rowmax = range("A1").End(xlDown).Row
+rowmax = Range("A1").End(xlDown).Row
 cepicol = Cells.Find("ZipCodeStart").Column
 cepfcol = Cells.Find("ZipCodeEnd").Column
 wscol = Cells.Find("WeightStart").Column
@@ -47,10 +54,10 @@ On Error Resume Next
 maxvolcol = Cells.Find("MaxVolume").Column
 minimumvalcol = Cells.Find("MinimumValueInsurance").Column
 
-Set firstrange = range(Cells(1, cepicol), Cells(rowmax, cepicol))
-Set secondrange = range(Cells(1, cepfcol), Cells(rowmax, cepfcol))
-Set thirdrange = range(Cells(1, wscol), Cells(rowmax, wscol))
-Set fourthrange = range(Cells(1, wecol), Cells(rowmax, wecol))
+Set firstrange = Range(Cells(1, cepicol), Cells(rowmax, cepicol))
+Set secondrange = Range(Cells(1, cepfcol), Cells(rowmax, cepfcol))
+Set thirdrange = Range(Cells(1, wscol), Cells(rowmax, wscol))
+Set fourthrange = Range(Cells(1, wecol), Cells(rowmax, wecol))
 
 rowmax25 = 1
 For i = 2 To rowmax - 1
@@ -61,7 +68,7 @@ Next i
 End Sub
 
 Sub classificar()
-endcol = range("A1").End(xlToRight).Column
+endcol = Range("A1").End(xlToRight).Column
 
 ActiveWorkbook.Worksheets(1).Sort.SortFields.Clear
     ActiveWorkbook.Worksheets(1).Sort.SortFields.Add2 Key:=firstrange, SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:= _
@@ -73,7 +80,7 @@ ActiveWorkbook.Worksheets(1).Sort.SortFields.Clear
     ActiveWorkbook.Worksheets(1).Sort.SortFields.Add2 Key:=fourthrange, SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:= _
         xlSortNormal
     With ActiveWorkbook.Worksheets(1).Sort
-        .SetRange range(Cells(1, 1), Cells(rowmax, endcol))
+        .SetRange Range(Cells(1, 1), Cells(rowmax, endcol))
         .Header = xlYes
         .MatchCase = False
         .Orientation = xlTopToBottom
@@ -91,6 +98,15 @@ Dim limit As Double: limit = 0
 'Verifica quais são todos os pesos existentes na VTEX
 ReDim Preserve rangepeso(0)
 
+'Linha para cuidar do caso dos pesos que estão em toneladas ao invés de kg
+divisor = 1
+tonelada = MsgBox("O peso da tabela está em gramas?", vbYesNo, "PESO")
+
+
+If tonelada = 6 Then
+    divisor = 1000
+End If
+
 For i = 2 To rowmax
     pesoexists = False
     For k = 0 To UBound(rangepeso)
@@ -106,9 +122,32 @@ For i = 2 To rowmax
         End If
 Next i
 
+
 'FAzer um algoritmo para saber a procedencia dos pesos
 
 End Sub
+
+
+
+Sub format_prazo()
+
+must_format_prazo = False
+
+Set prazo_range = Range(Cells(2, timecostcol), Cells(rowmax, timecostcol))
+
+prazo_range.Select
+
+If Not (prazo_range.Cells.Find(".") Is Nothing) Then
+    For i = 2 To rowmax
+        word = Cells(i, timecostcol)
+        Cells(i, timecostcol) = Replace(Cells(i, timecostcol), ".00:00:00", "")
+    Next i
+End If
+
+
+End Sub
+
+
 
 Sub sorting()
 
@@ -126,7 +165,7 @@ End Sub
 Sub construcao()
 Dim pesoexists As Boolean: pesoexists = False
 Dim i As Double: i = 0
-Dim same_cep As range
+Dim same_cep As Range
 
 
 'Parte para verificar a a validação da range peso
@@ -148,10 +187,10 @@ inicial = 2
 For k = 1 To UBound(array25, 2)
     
     linha_final = range_cep(Cells(inicial, cepicol), inicial)
-    Set same_cep = range(Cells(inicial, cepicol), Cells(linha_final, cepicol))
+    Set same_cep = Range(Cells(inicial, cepicol), Cells(linha_final, cepicol))
     
     array25(0, linha_matriz) = Cells(inicial, cepicol).Value: array25(1, linha_matriz) = Cells(inicial, cepfcol).Value: array25(2, linha_matriz) = Cells(inicial, timecostcol).Value
-    array25(UBound(array25, 1) - 1, linha_matriz) = Cells(linha_final, exccol).Value:  array25(UBound(array25, 1), linha_matriz) = Cells(linha_final, pricepercol).Value
+    array25(UBound(array25, 1) - 1, linha_matriz) = (Cells(linha_final, exccol).Value * divisor):  array25(UBound(array25, 1), linha_matriz) = Cells(linha_final, pricepercol).Value
     
     For j = 3 To UBound(array25, 1) - 2
         For i = inicial To linha_final
@@ -173,12 +212,16 @@ Next k
 
 
 
-
-
+For j = 3 To UBound(array25, 1) - 2
+    array25(j, 0) = array25(j, 0) / divisor
+Next j
 
 
 
 End Sub
+
+
+
 
 Sub cria_25()
 
@@ -188,38 +231,106 @@ Set wb25 = ActiveWorkbook
 
 end_row = UBound(array25, 2) + 1
 end_col = UBound(array25, 1) + 1
-range(Cells(4, 3), Cells(end_row + 3, end_col + 2)).Select
+Range(Cells(4, 3), Cells(end_row + 3, end_col + 2)).Select
 
 Selection = WorksheetFunction.Transpose(array25)
 
-With range(Cells(4, 3), Cells(4, end_col + 2))
+With Range(Cells(4, 3), Cells(4, end_col + 2))
     .Interior.Color = 4697456
     .Font.Color = 16777215
 End With
 
-With range("A4")
+''
+
+DADOS.Show
+
+With Range("A4")
     .Interior.Color = 4697456
     .Font.Color = 16777215
      .Value = "ICMS Incluso?(S/N)"
 End With
-range("A5") = "N"
 
-With range("A7")
+
+With Range("A7")
     .Interior.Color = 4697456
     .Font.Color = 16777215
      .Value = "CUBAGEM(kg/m³)"
 End With
-range("A8") = 0
 
-range("F1") = "TABELA DE FRETE POR PESO"
-range("F3") = "FAIXAS DE PESO (KG)"
+If ceporigem1 <> "" Then
+    With Range("A10")
+        .Interior.Color = 4697456
+        .Font.Color = 16777215
+        .Value = "CEP ORIGEM"
+    End With
+    Cells(11, 1) = ceporigem1
+End If
+
+If isencao <> "" Then
+    Cells(14, 1) = isencao
+    With Range("A13")
+        .Interior.Color = 4697456
+        .Font.Color = 16777215
+         .Value = "ISENÇÃO DE CUBAGEM(kg)"
+    End With
+
+End If
+With Range("A16")
+    .Interior.Color = 4697456
+    .Font.Color = 16777215
+     .Value = "LIMITE DE ALTURA(cm)"
+End With
+
+With Range("A19")
+    .Interior.Color = 4697456
+    .Font.Color = 16777215
+     .Value = "LIMITE DE LARGURA(cm)"
+End With
+
+With Range("A22")
+    .Interior.Color = 4697456
+    .Font.Color = 16777215
+     .Value = "LIMITE DE COMPRIMENTO(cm)"
+End With
+
+Range("F1") = "TABELA DE FRETE POR PESO"
+Range("F3") = "FAIXAS DE PESO (KG)"
    
-With range("F1:F3")
+With Range("F1:F3")
     .Interior.Color = 4697456
     .Font.Color = 16777215
 End With
 
+
+Cells(5, 1) = icms
+Cells(23, 1) = limitc
+Cells(20, 1) = limitl
+Cells(17, 1) = limita
+Cells(8, 1) = cubagem
+
+
+end_money_col = end_col
+sub_end_money_col = end_col - 1
+
+final_row = Range(Cells(4, 3), Cells(4, 3)).End(xlDown).Row
+
+erro_ultima_coluna = True
+For i = 5 To final_row
+    If Cells(i, end_money_col) <> Cells(i, sub_end_money_col) Then
+        erro_ultima_coluna = False
+        Exit For
+    End If
+Next i
+
+If erro_ultima_coluna Then
+    Columns(end_money_col).Delete
+End If
+
+
 Cells.EntireColumn.AutoFit
+
+ActiveSheet.Name = "2.5"
+
 
 End Sub
 
@@ -238,3 +349,12 @@ Loop
 range_cep = linha_inicial + linha_final - 1
 
 End Function
+
+
+
+
+
+
+
+
+
