@@ -13,3 +13,5 @@ The "Files Mover" is capabe of moving files regarding a client and its method to
 
 
 The "Replicator" eases the task of replicating the CEP ORIGEM and the store´s name to each standard file. 
+
+"VTEX" is a macro which is capable of turning the VTEX Table into the Intelipost´s standard table.
