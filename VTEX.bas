@@ -5,7 +5,7 @@ Dim firstrange As Range, secondrange As Range, thirdrange As Range, fourthrange 
 
 Public ceporigem1, icms, limitc, limitl, limita, cubagem, isencao
 
-Sub main()
+Sub main100()
 
 'ActiveWorkbook.Save
 Sheets("Dados").Activate
@@ -184,7 +184,12 @@ Next i
 
 linha_matriz = 1
 inicial = 2
+
+'tempoinicial = Time
+
 For k = 1 To UBound(array25, 2)
+    
+    If Cells(inicial, cepicol) = "" Then Exit For
     
     linha_final = range_cep(Cells(inicial, cepicol), inicial)
     Set same_cep = Range(Cells(inicial, cepicol), Cells(linha_final, cepicol))
@@ -192,11 +197,13 @@ For k = 1 To UBound(array25, 2)
     array25(0, linha_matriz) = Cells(inicial, cepicol).Value: array25(1, linha_matriz) = Cells(inicial, cepfcol).Value: array25(2, linha_matriz) = Cells(inicial, timecostcol).Value
     array25(UBound(array25, 1) - 1, linha_matriz) = (Cells(linha_final, exccol).Value * divisor):  array25(UBound(array25, 1), linha_matriz) = Cells(linha_final, pricepercol).Value
     
+    m = inicial
     For j = 3 To UBound(array25, 1) - 2
-        For i = inicial To linha_final
+        For i = m To linha_final
             If Cells(i, wecol) = array25(j, 0) Then
                 pesoexists = True
                 array25(j, linha_matriz) = Cells(i, moneycostcol)
+                m = i + 1
                 Exit For
             End If
         Next i
@@ -210,7 +217,7 @@ For k = 1 To UBound(array25, 2)
     linha_matriz = linha_matriz + 1
 Next k
 
-
+'MsgBox Minute(Time - tempoinicial) & " minutos " & Second(Time - tempoinicial) & " segundos"
 
 For j = 3 To UBound(array25, 1) - 2
     array25(j, 0) = array25(j, 0) / divisor
@@ -309,22 +316,32 @@ Cells(17, 1) = limita
 Cells(8, 1) = cubagem
 
 
-end_money_col = end_col
-sub_end_money_col = end_col - 1
 
-final_row = Range(Cells(4, 3), Cells(4, 3)).End(xlDown).Row
+collumexc = Cells.Find("VALOR EXCEDENTE").Column
 
-erro_ultima_coluna = True
-For i = 5 To final_row
-    If Cells(i, end_money_col) <> Cells(i, sub_end_money_col) Then
-        erro_ultima_coluna = False
-        Exit For
+
+If WorksheetFunction.Sum(Cells.Columns(collumexc)) > 0 Then
+    dif = Cells(4, collumexc).Offset(0, -1) - Cells(4, collumexc).Offset(0, -2)
+    If dif > 1500 Then
+        Cells.Columns(collumexc - 1).Delete
     End If
-Next i
-
-If erro_ultima_coluna Then
-    Columns(end_money_col).Delete
 End If
+
+'end_money_col = end_col
+'sub_end_money_col = end_col - 1
+
+'final_row = Range(Cells(4, 3), Cells(4, 3)).End(xlDown).Row
+'erro_ultima_coluna = True
+'For i = 5 To final_row
+    'If Cells(i, end_money_col) <> Cells(i, sub_end_money_col) Then
+        'erro_ultima_coluna = False
+        'Exit For
+    'End If
+'Next i
+
+'If erro_ultima_coluna Then
+    'Columns(end_money_col).Delete
+'End If
 
 
 Cells.EntireColumn.AutoFit
@@ -340,6 +357,7 @@ Function range_cep(ceptemp, linha_inicial)
 'Função para achar a range do cep em específico
 linha_final = 0
 p = 0
+
 
 Do While Cells(linha_inicial + p, cepicol) = ceptemp
     linha_final = linha_final + 1
