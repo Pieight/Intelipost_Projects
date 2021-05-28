@@ -2,7 +2,7 @@ Attribute VB_Name = "Macro_VTEX"
 Dim cepicol As Double, cepfcol As Double, rowmax As Double, wscol As Double, wecol As Double, minimumvalcol As Double
 Dim moneycostcol As Double, pricepercol As Double, exccol As Double, maxvolcol As Double, timecostcol As Double
 Dim firstrange As Range, secondrange As Range, thirdrange As Range, fourthrange As Range, rangepeso() As Variant, array25() As Variant, rowmax25 As Double, divisor As Double, wb25 As Workbook
-
+Dim multiplicador As Double, minimumexists As Boolean
 Public ceporigem1, icms, limitc, limitl, limita, cubagem, isencao
 
 Sub main100()
@@ -49,10 +49,12 @@ moneycostcol = Cells.Find("AbsoluteMoneyCost").Column
 pricepercol = Cells.Find("PricePercent").Column
 exccol = Cells.Find("PriceByExtraWeight").Column
 timecostcol = Cells.Find("TimeCost").Column
+minimumvalcol = Cells.Find("MinimumValueInsurance").Column
 
 On Error Resume Next
 maxvolcol = Cells.Find("MaxVolume").Column
-minimumvalcol = Cells.Find("MinimumValueInsurance").Column
+
+
 
 Set firstrange = Range(Cells(1, cepicol), Cells(rowmax, cepicol))
 Set secondrange = Range(Cells(1, cepfcol), Cells(rowmax, cepfcol))
@@ -102,9 +104,15 @@ ReDim Preserve rangepeso(0)
 divisor = 1
 tonelada = MsgBox("O peso da tabela está em gramas?", vbYesNo, "PESO")
 
+multiplicador = 1
+porcentagem = MsgBox("O Ad Valorem da tabela está no formato '0,00123' ao invés de '0,123'?", vbYesNo, "AD VALOREM")
 
 If tonelada = 6 Then
     divisor = 1000
+End If
+
+If porcentagem = 6 Then
+    multiplicador = 100
 End If
 
 For i = 2 To rowmax
@@ -175,8 +183,10 @@ Dim same_cep As Range
         'elseif rangepeso(i) <> Cells(k, wecol) and
     'Next
 
-ReDim Preserve array25(0 To 5 + UBound(rangepeso), 0 To rowmax25)
-array25(0, 0) = "CEPI": array25(1, 0) = "CEPF": array25(2, 0) = "PRAZO(DIAS ÚTEIS)": array25(UBound(array25, 1) - 1, 0) = "VALOR EXCEDENTE": array25(UBound(array25, 1), 0) = "FRETE VALOR SOBRE A NOTA(%)"
+ReDim Preserve array25(0 To 5 + UBound(rangepeso) + 1, 0 To rowmax25)
+array25(0, 0) = "CEPI": array25(1, 0) = "CEPF": array25(2, 0) = "PRAZO(DIAS ÚTEIS)": array25(UBound(array25, 1) - 2, 0) = "VALOR EXCEDENTE": array25(UBound(array25, 1), 0) = "SEGURO(%)"
+array25(UBound(array25, 1) - 1, 0) = "SEGURO MÍNIMO"
+
 
 For i = 3 To UBound(rangepeso) + 3
     array25(i, 0) = rangepeso(i - 3)
@@ -195,10 +205,10 @@ For k = 1 To UBound(array25, 2)
     Set same_cep = Range(Cells(inicial, cepicol), Cells(linha_final, cepicol))
     
     array25(0, linha_matriz) = Cells(inicial, cepicol).Value: array25(1, linha_matriz) = Cells(inicial, cepfcol).Value: array25(2, linha_matriz) = Cells(inicial, timecostcol).Value
-    array25(UBound(array25, 1) - 1, linha_matriz) = (Cells(linha_final, exccol).Value * divisor):  array25(UBound(array25, 1), linha_matriz) = Cells(linha_final, pricepercol).Value
-    
+    array25(UBound(array25, 1) - 2, linha_matriz) = (Cells(linha_final, exccol).Value * divisor):  array25(UBound(array25, 1), linha_matriz) = (Cells(linha_final, pricepercol).Value * multiplicador)
+    array25(UBound(array25, 1) - 1, linha_matriz) = (Cells(linha_final, minimumvalcol).Value * 1)
     m = inicial
-    For j = 3 To UBound(array25, 1) - 2
+    For j = 3 To UBound(array25, 1) - 3
         For i = m To linha_final
             If Cells(i, wecol) = array25(j, 0) Then
                 pesoexists = True
@@ -219,7 +229,7 @@ Next k
 
 'MsgBox Minute(Time - tempoinicial) & " minutos " & Second(Time - tempoinicial) & " segundos"
 
-For j = 3 To UBound(array25, 1) - 2
+For j = 3 To UBound(array25, 1) - 3
     array25(j, 0) = array25(j, 0) / divisor
 Next j
 
@@ -249,57 +259,6 @@ End With
 
 ''
 
-DADOS.Show
-
-With Range("A4")
-    .Interior.Color = 4697456
-    .Font.Color = 16777215
-     .Value = "ICMS Incluso?(S/N)"
-End With
-
-
-With Range("A7")
-    .Interior.Color = 4697456
-    .Font.Color = 16777215
-     .Value = "CUBAGEM(kg/m³)"
-End With
-
-If ceporigem1 <> "" Then
-    With Range("A10")
-        .Interior.Color = 4697456
-        .Font.Color = 16777215
-        .Value = "CEP ORIGEM"
-    End With
-    Cells(11, 1) = ceporigem1
-End If
-
-If isencao <> "" Then
-    Cells(14, 1) = isencao
-    With Range("A13")
-        .Interior.Color = 4697456
-        .Font.Color = 16777215
-         .Value = "ISENÇÃO DE CUBAGEM(kg)"
-    End With
-
-End If
-With Range("A16")
-    .Interior.Color = 4697456
-    .Font.Color = 16777215
-     .Value = "LIMITE DE ALTURA(cm)"
-End With
-
-With Range("A19")
-    .Interior.Color = 4697456
-    .Font.Color = 16777215
-     .Value = "LIMITE DE LARGURA(cm)"
-End With
-
-With Range("A22")
-    .Interior.Color = 4697456
-    .Font.Color = 16777215
-     .Value = "LIMITE DE COMPRIMENTO(cm)"
-End With
-
 Range("F1") = "TABELA DE FRETE POR PESO"
 Range("F3") = "FAIXAS DE PESO (KG)"
    
@@ -308,14 +267,86 @@ With Range("F1:F3")
     .Font.Color = 16777215
 End With
 
+DADOS.Show
 
+
+With Range("A4")
+    .Interior.Color = 4697456
+    .Font.Color = 16777215
+     .Value = "ICMS Incluso?(S/N)"
+End With
 Cells(5, 1) = icms
-Cells(23, 1) = limitc
-Cells(20, 1) = limitl
-Cells(17, 1) = limita
+
+
+With Range("A7")
+    .Interior.Color = 4697456
+    .Font.Color = 16777215
+     .Value = "CUBAGEM(kg/m³)"
+End With
 Cells(8, 1) = cubagem
 
+If ceporigem1 <> "" Then
+    Set cel = Range("A1048576").End(xlUp).Offset(2, 0)
+    With cel
+        .Interior.Color = 4697456
+        .Font.Color = 16777215
+        .Value = "CEP ORIGEM"
+    End With
+    cel.Offset(1, 0) = ceporigem1
+End If
 
+
+If CEPfinal <> "" Then
+    Set cel = Range("A1048576").End(xlUp).Offset(2, 0)
+    With cel
+        .Interior.Color = 4697456
+        .Font.Color = 16777215
+        .Value = "CEP FINAL"
+    End With
+    cel.Offset(1, 0) = CEPfinal
+End If
+
+
+If isencao <> "" Then
+    Set cel = Range("A1048576").End(xlUp).Offset(2, 0)
+    With cel
+        .Interior.Color = 4697456
+        .Font.Color = 16777215
+         .Value = "ISENÇÃO DE CUBAGEM(kg)"
+    End With
+    cel.Offset(1, 0) = isencao
+End If
+
+
+If limitc <> 0 Then
+    Set cel = Range("A1048576").End(xlUp).Offset(2, 0)
+    With cel
+        .Interior.Color = 4697456
+        .Font.Color = 16777215
+        .Value = "LIMITE DE ALTURA(cm)"
+    End With
+    cel.Offset(1, 0) = limitc
+End If
+
+If limitl <> 0 Then
+    Set cel = Range("A1048576").End(xlUp).Offset(2, 0)
+    With cel
+        .Interior.Color = 4697456
+        .Font.Color = 16777215
+        .Value = "LIMITE DE LARGURA(cm)"
+    End With
+    cel.Offset(1, 0) = limitl
+End If
+
+If limita <> 0 Then
+   Set cel = Range("A1048576").End(xlUp).Offset(2, 0)
+    With cel
+        .Interior.Color = 4697456
+        .Font.Color = 16777215
+        .Value = "LIMITE DE COMPRIMENTO(cm)"
+    End With
+    cel.Offset(1, 0) = limita
+End If
 
 collumexc = Cells.Find("VALOR EXCEDENTE").Column
 
